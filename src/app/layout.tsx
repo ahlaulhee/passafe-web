@@ -3,9 +3,9 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 
 import { AppProps } from "next/app";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { makeStore } from "../redux/store";
+// import { Provider } from "react-redux";
+// import { PersistGate } from "redux-persist/integration/react";
+// import { makeStore } from "../redux/store";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -19,17 +19,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { store, persistor } = makeStore();
+  // const { store, persistor } = makeStore();
 
   return (
     <html lang="en">
       {/* <body className={inter.className}> */}
       <body>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            {children}
-          </PersistGate>
-        </Provider>
+        {/* <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}> */}
+        {children}
+        {/* </PersistGate>
+        </Provider> */}
       </body>
     </html>
   );
