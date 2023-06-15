@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import localforage from "localforage";
+import "./globals.css";
 // import crypto from "crypto";
 
 function generatePassword(
@@ -105,30 +106,64 @@ const PasswordsPage = () => {
   };
 
   return (
-    <div>
-      <h1>Password Manager</h1>
-      <div>
-        <label>Keyword:</label>
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
+    <div className="bg-gray-800 h-screen flex flex-col p-5">
+      <h2 className="text-xl font-semibold text-gray-100 mb-6">
+        Password Manager
+      </h2>
+      <div className="bg-gray-700 rounded-lg shadow-lg px-6 py-8 mb-8">
+        <div className="mb-8">
+          <label className="block text-gray-100 font-semibold mb-2">
+            Keyword:
+          </label>
+          <input
+            className="block w-full bg-gray-900 rounded-md px-4 py-2 text-gray-100 border-none focus:ring focus:ring-blue-500 focus:outline-none"
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+        </div>
+        {generatedPassword && (
+          <div className="mb-8">
+            <label className="block text-gray-100 font-semibold mb-2">
+              Generated Password:
+            </label>
+            <span className="block w-full rounded-md border border-gray-600 px-4 py-2 text-gray-100 bg-gray-900 mb-4">
+              {generatedPassword}
+            </span>
+          </div>
+        )}
+        <button
+          className="bg-indigo-600 text-white rounded-md px-6 py-2 text-sm font-semibold shadow-sm hover:bg-indigo-500 focus:outline-none focus-visible:outline focus-visible:outline-indigo-800 transition-colors duration-200 mr-4"
+          onClick={handleGeneratePassword}
+        >
+          Generate Password
+        </button>
       </div>
-      <button onClick={handleGeneratePassword}>Generate Password</button>
-      <div>
-        <label>Generated Password:</label>
-        <input type="text" value={generatedPassword} readOnly />
+      <div className="bg-gray-700 rounded-lg shadow-lg p-6 flex-1">
+        <h2 className="text-xl font-semibold text-gray-100 mb-6">
+          Password List
+        </h2>
+        <ul id="password-list" className="list-disc pl-4 text-gray-100">
+          {Object.entries(passwords).map(([key, password]) => (
+            <li className="flex justify-between items-center mb-2" key={key}>
+              <p className="mr-4">
+                <strong>Keyword:</strong>
+                {key}
+              </p>
+              <p>
+                <strong>Password:</strong>
+                {password}
+              </p>
+              <button
+                className="bg-red-500 text-white rounded-full px-3 py-1 hover:bg-red-400 focus:outline-none focus-visible:outline focus-visible:outline-red-800 transition-colors duration-200"
+                onClick={() => handleDeletePassword(key)}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
-      <h2>Saved Passwords</h2>
-      <ul>
-        {Object.entries(passwords).map(([key, password]) => (
-          <li key={key}>
-            {key}: {password}{" "}
-            <button onClick={() => handleDeletePassword(key)}>Delete</button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
