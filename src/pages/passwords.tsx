@@ -64,21 +64,44 @@ const PasswordsPage = () => {
 
   useEffect(() => {
     const loadPasswords = async () => {
+      if (!masterPassword || !fullName) {
+        return;
+      }
       const keys = await localforage.keys();
       const passwordData: { [key: string]: string } = {};
 
       for (const key of keys) {
-        const password = await localforage.getItem<string>(key);
-        if (password) {
-          passwordData[key] = password;
+        if (key.startsWith(`${masterPassword}-${fullName}-`)) {
+          const keyword = key.split(`${masterPassword}-${fullName}-`)[1];
+          const password = await localforage.getItem<string>(key);
+          if (password) {
+            passwordData[keyword] = password;
+          }
         }
       }
 
       setPasswords(passwordData);
+
+      // const keys = await localforage.keys();
+      // const passwordData: { [key: string]: string } = {};
+      // for (const key of keys) {
+      //   const password = await localforage.getItem<string>(key);
+      //   if (
+      //     password &&
+      //     generatePassword(
+      //       masterPassword as string,
+      //       fullName as string,
+      //       key
+      //     ) === password
+      //   ) {
+      //     passwordData[key] = password;
+      //   }
+      // }
+      // setPasswords(passwordData);
     };
 
     loadPasswords();
-  }, []);
+  }, [fullName, masterPassword]);
 
   const handleGeneratePassword = async () => {
     if (!masterPassword || !fullName) {
@@ -93,7 +116,10 @@ const PasswordsPage = () => {
     );
     setGeneratedPassword(password);
 
-    await localforage.setItem(keyword, password);
+    const storageKey = `${masterPassword}-${fullName}-${keyword}`;
+    await localforage.setItem(storageKey, password);
+
+    // await localforage.setItem(keyword, password);
     setPasswords({ ...passwords, [keyword]: password });
   };
 
